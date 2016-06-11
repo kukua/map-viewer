@@ -9,6 +9,15 @@ Programmer: Moses Mulisa Byanyuma
     <script src="https://maps.googleapis.com/maps/api/js?&key=AIzaSyA8F31DGLZgZOjcMKhWO5bZ6ogMwlHRsS8&callback=loadMap"
             async defer></script>
     <script type="text/javascript">
+        
+        var customIcons = {
+      Weather_Station1: {
+        icon: '/WeatherProject/map-viewer/barca.png'
+      },
+      Weather_Station2: {
+        icon: '/WeatherProject/map-viewer/madrid.png'
+      }
+    };
     
 
     setTimeout(
@@ -32,9 +41,11 @@ Programmer: Moses Mulisa Byanyuma
               parseFloat(markers[i].getAttribute("lat")),
               parseFloat(markers[i].getAttribute("lng")));
           var html = "<b>" + name + "</b> <br/>" + address;
+            var icon = customIcons[type] || {};
           var marker = new google.maps.Marker({
             map: map,
             position: point,
+              icon: icon.icon
           });
           bindInfoWindow(marker, map, infoWindow, html);
         }
@@ -48,6 +59,7 @@ Programmer: Moses Mulisa Byanyuma
       });
     }
 
+        
     function downloadUrl(url, callback) {
       var request = window.ActiveXObject ?
           new ActiveXObject('Microsoft.XMLHTTP') :
