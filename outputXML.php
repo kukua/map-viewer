@@ -5,7 +5,7 @@ require(__DIR__.'/dbinfo.php');
 
 // Opens a connection to a mySQL server
 try {
-$db = new PDO('mysql:host=localhost;dbname=map_database;charset=utf8',  'root', 'password');
+$db = new PDO('mysql:host=moses.kukua.tech;dbname=moses;charset=utf8',  'admin', 'Mosesbyanyuma109');
    // echo "Connected to the database"; //checking for connection
 }
 catch (PDOException $e)
