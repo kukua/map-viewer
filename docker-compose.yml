@@ -1,0 +1,5 @@
+viewer:
+    build: .
+    ports:
+        - "9000:8080"
+    restart: always
