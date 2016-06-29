@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+<head>
+ 	 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+ 	 <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+ 	 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-realtime/1.3.0/leaflet-realtime.min.js"></script>
+ 	 <style type="text/css">
+		html, body, #map, #details { margin: 0; padding: 0; width: 100%; height: 100%; }
+		#map { width: 100%; max-width: calc(100% - 300px); }
+		#details {
+			width: 300px;
+			position: absolute;
+			top: 0;
+			right: 0;
+			background-color: #f7f7f7;
+		}
+		#details dl {
+			width: 100%;
+			margin: 0;
+			padding: 20px;
+			font: 20px normal Helvetica, sans-serif;
+		}
+		#details dl dt {
+			font-weight: bold;
+		}
+	 </style>
+</head>
+<body>
+
+<div id="map"></div>
+<div id="details"></div>
+
+<script>
+
+var labels = {
+	udid: 'Device ID',
+	timestamp: 'Last measurement',
+	temp: 'Temperature',
+	pressure: 'Pressure',
+	humid: 'Relative humidity',
+}
+var units = {
+	temp: '°C',
+	pressure: 'hPa',
+	humid: '%',
+}
+
+function showDetails (ev) {
+	var properties = ev.target.feature.properties
+	var html = '<dl>'
+	Object.keys(labels).forEach(function (key) {
+		var unit = (units[key] ? ' ' + units[key] : '')
+		html += '<dt>' + labels[key] + '</dt>'
+		html += '<dd>' + properties[key] + unit + '</dd>'
+	})
+	html += '</dl>'
+	document.getElementById('details').innerHTML = html
+}
+
+var map = L.map('map').setView([52.2114158, 5.1948251], 4)
+var realtime = L.realtime('/data', {
+	type: 'json',
+	getFeatureId: function (f) {
+		return f.properties.udid
+	},
+	onEachFeature: function (f, layer) {
+		layer.on('mouseover', showDetails)
+	},
+}, {
+	interval: 60 * 1000
+}).addTo(map)
+
+L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+	attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+	maxZoom: 18,
+	id: 'mauvm.0b0g6b9b',
+	accessToken: 'pk.eyJ1IjoibWF1dm0iLCJhIjoiQlc2a2RnUSJ9.P4aCXel3FSBMXv5xF5pv9Q'
+}).addTo(map)
+
+realtime.on('update', function () {
+	map.fitBounds(realtime.getBounds(), { maxZoom: 4 })
+})
+
+
+/*
+map.on('click', function (e) {
+	console.log(e.getLatLng())
+})
+
+L.marker([51.5, -0.09]).addTo(map)
+	.on('click', function (e) {
+		console.log(e)
+	})
+	.bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
+	.openPopup()
+*/
+</script>
+
+</body>
+</html>
