@@ -36,7 +36,7 @@ function format (udid,data) {
 	return {
 		geometry: {
 			type: 'Point',
-			coordinates: [data.lat, data.long],
+			coordinates: [data.long, data.lat],
 		},
 		type: 'Feature',
 		properties,
