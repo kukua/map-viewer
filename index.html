@@ -40,10 +40,10 @@ Programmer: Moses Mulisa Byanyuma
       var infoWindow = new google.maps.InfoWindow;
 
       
-      downloadUrl('outputXML.php', function(data) {
+        downloadUrl('outputXML.php', function(data) {
         var xml = data.responseXML;
 		if ( ! xml) {
-			data.error.message;
+			alert(data.response.responseText);
             return;
 		}
         var markers = xml.documentElement.getElementsByTagName("marker");
