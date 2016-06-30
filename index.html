@@ -26,41 +26,37 @@ Programmer: Moses Mulisa Byanyuma
 
 	<script type="text/javascript">
 
-		$(document).ready(function() {
+		function loadMap() {
+			var map = new google.maps.Map(document.getElementById("map"), {
+				center: new google.maps.LatLng(-4.8199534, 38.35222),
+				zoom: 3,
+				mapTypeId: 'roadmap'
+			});
+			var infoWindow = new google.maps.InfoWindow;
 
-			setTimeout(function loadMap() {
-				var map = new google.maps.Map(document.getElementById("map"), {
-					center: new google.maps.LatLng(-4.8199534, 38.35222),
-					zoom: 3,
-					mapTypeId: 'roadmap'
-				});
-				var infoWindow = new google.maps.InfoWindow;
-
-				downloadUrl('outputXML.php', function(data) {
-					var xml = data.responseXML;
-					if ( ! xml) {
-						alert(data.response.responseText);
-						return;
-					}
-					var markers = xml.documentElement.getElementsByTagName("marker");
-					for (var i = 0; i < markers.length; i++) {
-						var name = markers[i].getAttribute("name");
-						var address = markers[i].getAttribute("address");
-						var type = markers[i].getAttribute("type");
-						var point = new google.maps.LatLng(
-								parseFloat(markers[i].getAttribute("lat")),
-								parseFloat(markers[i].getAttribute("lng")));
-						var html = "<b>" + name + "</b> <br/>" + address;
-						var marker = new google.maps.Marker({
-							map: map,
-							position: point,
-						});
-						bindInfoWindow(marker, map, infoWindow, html);
-					}
-
-				});
-			}, 2000);
-		});
+			downloadUrl('outputXML.php', function(data) {
+				var xml = data.responseXML;
+				if ( ! xml) {
+					alert(data.response.responseText);
+					return;
+				}
+				var markers = xml.documentElement.getElementsByTagName("marker");
+				for (var i = 0; i < markers.length; i++) {
+					var name = markers[i].getAttribute("name");
+					var address = markers[i].getAttribute("address");
+					var type = markers[i].getAttribute("type");
+					var point = new google.maps.LatLng(
+							parseFloat(markers[i].getAttribute("lat")),
+							parseFloat(markers[i].getAttribute("lng")));
+					var html = "<b>" + name + "</b> <br/>" + address;
+					var marker = new google.maps.Marker({
+						map: map,
+						position: point,
+					});
+					bindInfoWindow(marker, map, infoWindow, html);
+				}
+			});
+		};
 
 		function bindInfoWindow(marker, map, infoWindow, html) {
 			google.maps.event.addListener(marker, 'click', function() {
