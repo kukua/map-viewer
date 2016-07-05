@@ -3,6 +3,7 @@
 
 require('./.env');
 
+
 // Opens a connection to a mySQL server
 try {
 	$db = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME. ';charset=utf8',  DB_USERNAME, DB_PASSWORD);
@@ -13,16 +14,45 @@ try {
 $statement = $db->query('SELECT * FROM markers');
 //$result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
+$xmlWriter = new XMLWriter();
+$xmlWriter->openUri('php://stdout');
+
+$xmlWriter->startDocument();
+$xmlWriter->setIndent(2);
+$xmlWriter->startElement('markers');
+foreach ($statement as $row) {
+  $xmlWriter->startElement('marker');
+  $xmlWriter->writeAttribute('name', $row['name']);
+  $xmlWriter->writeAttribute('address', $row['address']);
+  $xmlWriter->writeAttribute('lat', $row['lat']);
+  $xmlWriter->writeAttribute('lng', $row['lng']);
+  $xmlWriter->writeAttribute('type', $row['type']);
+  $xmlWriter->endElement();
+}
+header('Content-type: text/xml');
+$xmlWriter->endElement();
+$xmlWriter->endDocument();
+
+
+
+
+/**
 $str = <<<XML
 <xml>
-       <marker name="test"   lat="-4.8199534" lng="38.35222" address="Test street 1" type="1"></marker>
-       <marker name="test 2" lat="-4.8199534" lng="38.34222" address="Test street 2" type="1"></marker>
+       <marker name="Walvis Bay Live"   lat="-22.956112" lng="14.508056" address="Walvis bay namibia Africa" type="Weather Station"></marker>
+       <marker name="Centro Surf Bracciano" lat="11.588599" lng="43.145851" address="djibouti djibouti" type="Weather Station"></marker>
+       <marker name="Bashewa Weather" lat="-25.825212" lng="28.312128" address="Garstfontein Rd Pretoria" type="Weather Station"></marker>
+       <marker name="Nelspruit Live" lat="-25.475298" lng="30.969416" address="nelspruit south africa" type="Weather Station"></marker>
+       <marker name="Richards Bay Live" lat="-28.780727" lng="32.038284" address="richards bay south africa" type="Weather Station"></marker>
+       <marker name="Cape Town Live" lat="-33.923775" lng="18.423346" address="cape town south africa" type="Weather Station"></marker>
 </xml>
 XML;
 
 header("Content-type: text/xml");
 echo $str;
 exit;
+*/
+
 
 /**
 $xml = new SimpleXMLElement('<xml/>');
