@@ -14,6 +14,7 @@ try {
 $statement = $db->query('SELECT * FROM markers');
 //$result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
+/**
 $xmlWriter = new XMLWriter();
 $xmlWriter->openUri('php://stdout');
 
@@ -32,11 +33,11 @@ foreach ($statement as $row) {
 header('Content-type: text/xml');
 $xmlWriter->endElement();
 $xmlWriter->endDocument();
+*/
 
 
 
 
-/**
 $str = <<<XML
 <xml>
        <marker name="Walvis Bay Live"   lat="-22.956112" lng="14.508056" address="Walvis bay namibia Africa" type="Weather Station"></marker>
@@ -51,7 +52,7 @@ XML;
 header("Content-type: text/xml");
 echo $str;
 exit;
-*/
+
 
 
 /**
