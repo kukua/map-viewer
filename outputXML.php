@@ -12,33 +12,31 @@ try {
 }
 
 $statement = $db->query('SELECT * FROM markers');
-//$result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-/**
-$xmlWriter = new XMLWriter();
-$xmlWriter->openUri('php://stdout');
+$xml = new DOMDocument("1.0");
+$xml->formatOutput = true;
 
-$xmlWriter->startDocument();
-$xmlWriter->setIndent(2);
-$xmlWriter->startElement('markers');
-foreach ($statement as $row) {
-  $xmlWriter->startElement('marker');
-  $xmlWriter->writeAttribute('name', $row['name']);
-  $xmlWriter->writeAttribute('address', $row['address']);
-  $xmlWriter->writeAttribute('lat', $row['lat']);
-  $xmlWriter->writeAttribute('lng', $row['lng']);
-  $xmlWriter->writeAttribute('type', $row['type']);
-  $xmlWriter->endElement();
+$markers = $xml->createElement('markers');
+$markers = $xml->appendChild($markers);
+
+while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+    
+     $marker = $xml->createElement('marker');
+     $markers->appendChild($marker);
+    
+     $marker->setAttribute('name', $row['name']);
+    $marker->setAttribute('lat', $row['lat']);
+    $marker->setAttribute('lng', $row['lng']);
+    $marker->setAttribute('address', $row['address']);
+    $marker->setAttribute('type', $row['type']);
+    
 }
-header('Content-type: text/xml');
-$xmlWriter->endElement();
-$xmlWriter->endDocument();
-*/
 
 
+echo "<xmp>".$xml->saveXML()."</xmp>";
+$xml->save("locations.xml");
 
-
-$str = <<<XML
+/**$str = <<<XML
 <xml>
        <marker name="Walvis Bay Live"   lat="-22.956112" lng="14.508056" address="Walvis bay namibia Africa" type="Weather Station"></marker>
        <marker name="Centro Surf Bracciano" lat="11.588599" lng="43.145851" address="djibouti djibouti" type="Weather Station"></marker>
@@ -52,22 +50,6 @@ XML;
 header("Content-type: text/xml");
 echo $str;
 exit;
-
-
-
-/**
-$xml = new SimpleXMLElement('<xml/>');
-
-while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-	$node = $xml->addChild('marker');
-	$node->addAttribute('name', $row['name']);
-	$node->addAttribute('address', $row['address']);
-	$node->addAttribute('lat', $row['lat']);
-	$node->addAttribute('lng', $row['lng']);
-	$node->addAttribute('type', $row['type']);
-}
-
-header('Content-type: text/xml');
-print($xml->asXML());
-exit;
 */
+
+?>
